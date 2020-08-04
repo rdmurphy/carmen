@@ -37,7 +37,7 @@ tape('index data', (t) => {
             properties: {
                 'carmen:text': 'some place',
                 'carmen:center': [0,0],
-                'carmen:forward_geocode_override': true
+                'carmen:reverse_only': true
             },
             geometry: {
                 type: 'Point',
@@ -68,7 +68,7 @@ tape('index data', (t) => {
     q.awaitAll(t.end);
 });
 
-tape('test [\'carmen:forward_geocode_override\']', (t) => {
+tape('test [\'carmen:reverse_only\']', (t) => {
     c.geocode('some place', { limit_verify: 1 }, (err, res) => {
         t.equals(res.features.length, 0, 'does not return a feature with property carmen:forward_geocode_override');
         t.ifError(err);
@@ -76,7 +76,7 @@ tape('test [\'carmen:forward_geocode_override\']', (t) => {
     });
 });
 
-tape('test [\'carmen:forward_geocode_override\'] for a feature with the same carmen:text', (t) => {
+tape('test [\'carmen:reverse_only\'] for a feature with the same carmen:text', (t) => {
     c.geocode('some place, america', { limit_verify: 1 }, (err, res) => {
         t.equals(res.features[0].place_name, 'america', 'does not return top level some place');
         t.equals(res.features[0].id, 'country.1', 'returned country');
@@ -84,7 +84,7 @@ tape('test [\'carmen:forward_geocode_override\'] for a feature with the same car
         t.end();
     });
 });
-tape('test [\'carmen:forward_geocode_override\'] for a feature with the same carmen:text', (t) => {
+tape('test [\'carmen:reverse_only\'] for a feature with the same carmen:text', (t) => {
     c.geocode('fake street, some place', { limit_verify: 5 }, (err, res) => {
         t.equals(res.features[0].place_name, 'fake street, some place, america', 'returned some place as a part of the context');
         t.equals(res.features[0].id, 'address.1', 'returned some place as a part of the context');
