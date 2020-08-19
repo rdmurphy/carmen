@@ -155,6 +155,8 @@ function Geocoder(indexes, options) {
                 source.geocoder_address = false;
             }
 
+            source.geocoder_context_tiebreaker_rank = info.geocoder_context_tiebreaker_rank || 0;
+
             source.geocoder_routable = info.geocoder_routable ? info.geocoder_routable : false;
 
             if (info.geocoder_version) {
