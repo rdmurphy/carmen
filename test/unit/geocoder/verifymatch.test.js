@@ -111,3 +111,36 @@ tape('verifymatch.verifyFeatures', (t) => {
     t.end();
 
 });
+
+tape('verifymatch.textAlike', (t) => {
+    const feats = [
+        {
+            'carmen:text': 'Apple',
+            'carmen:text_fr': 'Orange',
+            'carmen:text_de': 'Pear',
+            'carmen:geocoder_stack': 'us'
+        },
+        {
+            'carmen:text': 'Grapefruit',
+            'carmen:text_fr': 'Lemon',
+            'carmen:text_de': 'Lime',
+            'carmen:geocoder_stack': 'us'
+        },
+        {
+            'carmen:text': 'Grapefruit',
+            'carmen:text_fr': 'Orange',
+            'carmen:text_de': 'Kumquat',
+            'carmen:geocoder_stack': 'us'
+        },
+    ];
+
+    const textAlike = verifymatch.textAlike;
+    t.assert(!textAlike(feats[0], feats[1]), 'Features with no shared text properties aren\'t alike');
+    t.assert(textAlike(feats[1], feats[2]), 'Features with shared default text are alike');
+    t.assert(textAlike(feats[1], feats[2], new Set(['sv'])), 'Features with shared default text are alike even if a language is specified that they don\'t share');
+    t.assert(textAlike(feats[0], feats[2]), 'Features with shared language-specific text are alike with no language specified');
+    t.assert(textAlike(feats[0], feats[2], new Set(['fr'])), 'Features with shared language-specific text are alike with shared language specified');
+    t.assert(!textAlike(feats[0], feats[2], new Set(['de'])), 'Features with shared language-specific text aren\'t alike with non-shared language specified');
+
+    t.end();
+});

@@ -69,7 +69,7 @@
     "build-docs": " $(yarn bin)/documentation build --config docs/documentation.yml --access public --github --format md --output docs/api.md index.js lib/**"
   },
   "engines": {
-    "node": ">=6.x.x <=10.x.x"
+    "node": "10.x"
   },
   "repository": {
     "type": "git",
