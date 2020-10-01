@@ -1,5 +1,14 @@
 # Changelog
 
+## 33.1.0
+
+- Add a new scoring bonus for disambiguating features that have more than one element in their context with the same name
+
+## 33.0.1
+
+- Fix a bug in deduplication of 0-scored features
+- Add the ability to only expose features in reverse geocodes
+
 ## 33.0.0
 
 - Replace the `stackable`, `coalesce`, and `rebalance` algorithms with new ones that differently explore the possible combinations of index components to generate results.
