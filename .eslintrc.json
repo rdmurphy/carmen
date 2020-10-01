@@ -25,11 +25,15 @@
         }],
         "valid-jsdoc": ["warn", {
             "requireReturn": false
-        }]
+        }],
+        "node/no-unsupported-features": [ "error", { "version": 10 } ]
     },
     "env": {
         "node": "true",
         "es6": "true"
+    },
+    "parserOptions": {
+        "ecmaVersion": 2019
     },
     "extends": ["@mapbox/eslint-config-geocoding"]
 }

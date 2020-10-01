@@ -12,7 +12,8 @@ const { queueFeature, buildQueued } = require('../../lib/indexer/addfeature');
 const conf = {
     country: new mem({ maxzoom: 6, geocoder_languages: ['en'] }, () => {}),
     region: new mem({ maxzoom: 6, geocoder_languages: ['en'] }, () => {}),
-    place: new mem({ maxzoom: 6, geocoder_languages: ['en'], geocoder_inherit_score: true }, () => {})
+    place: new mem({ maxzoom: 6, geocoder_languages: ['en'], geocoder_inherit_score: true }, () => {}),
+    address: new mem({ maxzoom: 14, geocoder_languages: ['en'], geocoder_address: 1 }, () => {})
 };
 
 const c = new Carmen(conf);
@@ -92,14 +93,61 @@ tape('index place', (t) => {
         geometry: {
             type: 'Polygon',
             coordinates: [[
-                [40,40],
-                [40,50],
-                [50,50],
-                [50,40],
-                [40,40],
+                [42,42],
+                [42,48],
+                [48,48],
+                [48,42],
+                [42,42],
             ]]
         }
     }, t.end);
+});
+
+tape('index addresses', (t) => {
+    const q = queue();
+    // this one is inside the region
+    q.defer((cb) => queueFeature(conf.address, {
+        id: 10,
+        type: 'Feature',
+        properties: {
+            'carmen:addressnumber': ['1'],
+            'carmen:text': 'Main St',
+            'carmen:center': [0, 0]
+        },
+        geometry :{
+            type: 'MultiPoint',
+            coordinates: [[0, 0]]
+        }
+    }, cb));
+    // this one is inside the squishy feature
+    q.defer((cb) => queueFeature(conf.address, {
+        id: 11,
+        type: 'Feature',
+        properties: {
+            'carmen:addressnumber': ['1'],
+            'carmen:text': 'Main St',
+            'carmen:center': [45, 45]
+        },
+        geometry :{
+            type: 'MultiPoint',
+            coordinates: [[45, 45]]
+        }
+    }, cb));
+    // this one is inside the country but not in the squishy feature
+    q.defer((cb) => queueFeature(conf.address, {
+        id: 12,
+        type: 'Feature',
+        properties: {
+            'carmen:addressnumber': ['1'],
+            'carmen:text': 'Main St',
+            'carmen:center': [41, 41]
+        },
+        geometry :{
+            type: 'MultiPoint',
+            coordinates: [[41, 41]]
+        }
+    }, cb));
+    q.awaitAll(t.end);
 });
 
 tape('build queued features', (t) => {
@@ -120,8 +168,17 @@ tape('find georgia', (t) => {
     });
 });
 
+tape('find 1 main st georgia', (t) => {
+    c.geocode('1 main st georgia', {}, (err, res) => {
+        t.equal(res.features.filter((feat) => feat.id.match(/address/)).length, 3, 'got all three addresses back');
+        t.equal(res.features[0].id, 'address.11', 'squishy one comes back first');
+        t.equal(res.features[0].relevance, 1.00);
+
+        t.end();
+    });
+});
+
 tape('teardown', (t) => {
     context.getTile.cache.reset();
     t.end();
 });
-

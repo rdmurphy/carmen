@@ -290,6 +290,8 @@
                 "carmen:position": 0,
                 "carmen:spatialmatch": {
                     "relev": 1,
+                    "address": null,
+                    "partialNumber": false,
                     "covers": [
                         {
                             "x": 39,
@@ -300,7 +302,7 @@
                             "tmpid": 67108865,
                             "distance": 0,
                             "score": 1,
-                            "scoredist":  1.0014224866118175,
+                            "scoredist": 1.0014224866118175,
                             "scorefactor": 1,
                             "matches_language": true,
                             "source_phrase_hash": 82,
@@ -310,9 +312,8 @@
                             "zoom": 6
                         }
                     ],
-                    "partialNumber": false,
-                    "address": null,
-                    "scoredist":  1.0014224866118175
+                    "scoredist": 1.0014224866118175,
+                    "idxAverage": 2
                 },
                 "carmen:relev": 1,
                 "carmen:geocoder_address_order": "ascending",
