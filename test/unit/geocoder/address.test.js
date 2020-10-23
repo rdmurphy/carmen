@@ -898,7 +898,7 @@ test('queens', (t) => {
         type: 'Feature',
         properties: {
             accuracy: 'building',
-            'carmen:addressnumber': [['10-10', 200, '10-200', 10, 100, 1010, '1-010']],
+            'carmen:addressnumber': [['10-10', 200, '10-200', 10, 100, 1010, '1-010', '30-10']],
             'carmen:address_style': standardStyle,
             'carmen:address_styles': [standardStyle, queensStyle],
             'carmen:addressprops': {
@@ -913,7 +913,7 @@ test('queens', (t) => {
             type: 'GeometryCollection',
             geometries: [{
                 type: 'MultiPoint',
-                coordinates: [[1,1],[2,2],[3,3],[4,4],[5,5],[6,6],[7,7]]
+                coordinates: [[1,1],[2,2],[3,3],[4,4],[5,5],[6,6],[7,7],[8,8]]
             }]
         }
     };
@@ -923,7 +923,7 @@ test('queens', (t) => {
             type: 'Feature',
             properties: {
                 accuracy: 'building',
-                'carmen:addressnumber': [['10-10', 200, '10-200', 10, 100, 1010, '1-010']],
+                'carmen:addressnumber': [['10-10', 200, '10-200', 10, 100, 1010, '1-010', '30-10']],
                 'carmen:address_style': queensStyle,
                 'carmen:address_styles': [standardStyle, queensStyle],
                 'carmen:address': '10-10',
@@ -948,7 +948,7 @@ test('queens', (t) => {
             type: 'Feature',
             properties: {
                 accuracy: 'building',
-                'carmen:addressnumber': [['10-10', 200, '10-200', 10, 100, 1010, '1-010']],
+                'carmen:addressnumber': [['10-10', 200, '10-200', 10, 100, 1010, '1-010', '30-10']],
                 'carmen:address_style': standardStyle,
                 'carmen:address_styles': [standardStyle, queensStyle],
                 'carmen:addressprops': {
@@ -972,7 +972,7 @@ test('queens', (t) => {
             type: 'Feature',
             properties: {
                 accuracy: 'building',
-                'carmen:addressnumber': [['10-10', 200, '10-200', 10, 100, 1010, '1-010']],
+                'carmen:addressnumber': [['10-10', 200, '10-200', 10, 100, 1010, '1-010', '30-10']],
                 'carmen:address_style': queensStyle,
                 'carmen:address_styles': [standardStyle, queensStyle],
                 'carmen:address': '10-200',
@@ -990,6 +990,30 @@ test('queens', (t) => {
             }
         }],
         'Match hyphenated result to hyphen-less query'
+    );
+    t.deepEqual(
+        addressCluster.forward(feature, '30'),
+        [{
+            type: 'Feature',
+            properties: {
+                accuracy: 'building',
+                'carmen:addressnumber': [['10-10', 200, '10-200', 10, 100, 1010, '1-010', '30-10']],
+                'carmen:address_style': standardStyle,
+                'carmen:address_styles': [standardStyle, queensStyle],
+                'carmen:addressprops': {
+                    'carmen:address_style': {
+                        0: queensStyle,
+                        2: queensStyle,
+                        6: queensStyle
+                    }
+                }
+            },
+            geometry: {
+                type: 'Point',
+                coordinates: [8,8]
+            }
+        }],
+        'Match just the pre-hyphen part for non-queens addresses if that\'s the best we can do'
     );
     t.deepEqual(
         addressCluster.forwardPrefix(feature, '10-'),
