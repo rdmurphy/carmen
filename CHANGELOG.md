@@ -1,5 +1,9 @@
 # Changelog
 
+## 33.1.1
+
+- Add a new strategy for matching house numbers in address clusters in cases where they contain non-numeric characters, in which only the initial numeric portion is compared.
+
 ## 33.1.0
 
 - Add a new scoring bonus for disambiguating features that have more than one element in their context with the same name
