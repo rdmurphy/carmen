@@ -1095,3 +1095,67 @@ test('queens', (t) => {
     );
     t.end();
 });
+test('pre-hyphen matching', (t) => {
+    const feature = {
+        type: 'Feature',
+        properties: {
+            'carmen:addressnumber': [
+                Array.from(Array(100).keys()).map((num) => '99-' + (num + 1))
+            ],
+        },
+        geometry: {
+            type: 'GeometryCollection',
+            geometries: [{
+                type: 'MultiPoint',
+                coordinates: Array.from(Array(100).keys()).map((num) => [(num + 1), (num + 1)])
+            }]
+        }
+    };
+    t.deepEqual(
+        addressCluster.forward(feature, '99-1'),
+        [{
+            type: 'Feature',
+            properties: {
+                'carmen:addressnumber': feature.properties['carmen:addressnumber'],
+            },
+            geometry: {
+                type: 'Point',
+                coordinates: [1,1]
+            }
+        }],
+        'Exactly match a hyphenated address'
+    );
+
+    const expected = [];
+    for (let i = 1; i <= 10; i++) {
+        const expectedFeat = JSON.parse(JSON.stringify(feature));
+        expectedFeat.geometry = {
+            type: 'Point',
+            coordinates: [i, i]
+        };
+        expected.push(expectedFeat);
+    }
+    const actual = addressCluster.forward(feature, '99');
+    t.deepEqual(
+        actual,
+        expected,
+        'Match features that have 99 before the hyphen'
+    );
+    t.equal(actual.length, 10, 'got limit of 10 matching features');
+
+    t.deepEqual(
+        addressCluster.forward(feature, '99-99'),
+        [{
+            type: 'Feature',
+            properties: {
+                'carmen:addressnumber': feature.properties['carmen:addressnumber'],
+            },
+            geometry: {
+                type: 'Point',
+                coordinates: [99,99]
+            }
+        }],
+        'Exactly match a hyphenated address'
+    );
+    t.end();
+});
