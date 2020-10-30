@@ -1,5 +1,9 @@
 # Changelog
 
+## 33.1.2
+
+- Fix a regression introduced in 33.1.1 that occasionally allowed worse address number matches to fill up all the slots before better ones could be considered.
+
 ## 33.1.1
 
 - Add a new strategy for matching house numbers in address clusters in cases where they contain non-numeric characters, in which only the initial numeric portion is compared.
