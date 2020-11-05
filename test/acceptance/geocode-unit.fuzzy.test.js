@@ -253,6 +253,44 @@ tape('100 main st warshington dc - with fuzzy', (t) => {
     });
 });
 
+tape('100main st washington dc - without fuzzy', (t) => {
+    complex.geocode('100Main St washington dc', { limit_verify: 2, autocomplete: true, fuzzyMatch: false, types: ['address'] }, (err, res) => {
+        t.ifError(err);
+        t.assert(res.features.length === 0, '0 features returned');
+
+        t.end();
+    });
+});
+
+tape('100main st washington dc - with fuzzy', (t) => {
+    complex.geocode('100Main St washington dc', { limit_verify: 2, autocomplete: true, fuzzyMatch: true, types: ['address'] }, (err, res) => {
+        t.ifError(err);
+        t.deepEqual(res.features[0].place_name, '100 Main St, Washington, DC', '100 Main St');
+        t.deepEqual(res.features[0].id, 'address.100');
+        t.assert(res.features[0].relevance < 1, 'relevance < 1');
+        t.assert(res.features.length === 1, '1 feature returned');
+        t.end();
+    });
+});
+
+tape('100man st washington dc - with fuzzy (both whitespace and spelling error returns nothing)', (t) => {
+    complex.geocode('100Man St washington dc', { limit_verify: 2, autocomplete: true, fuzzyMatch: true, types: ['address'] }, (err, res) => {
+        t.ifError(err);
+        t.assert(res.features.length === 0, '0 features returned');
+
+        t.end();
+    });
+});
+
+tape('100 mainst washington dc - with fuzzy (non-numeric whitespace error returns nothing)', (t) => {
+    complex.geocode('100Man St washington dc', { limit_verify: 2, autocomplete: true, fuzzyMatch: true, types: ['address'] }, (err, res) => {
+        t.ifError(err);
+        t.assert(res.features.length === 0, '0 features returned');
+
+        t.end();
+    });
+});
+
 tape('teardown', (t) => {
     context.getTile.cache.reset();
     t.end();
