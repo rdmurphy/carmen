@@ -1,5 +1,9 @@
 # Changelog
 
+## 33.2.0
+
+- Add a mechanism for correcting whitespace errors in addresses in limited circumstances.
+
 ## 33.1.2
 
 - Fix a regression introduced in 33.1.1 that occasionally allowed worse address number matches to fill up all the slots before better ones could be considered.
