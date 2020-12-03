@@ -1,5 +1,10 @@
 # Changelog
 
+## 33.3.0
+
+- Make comparison operators available in all Carmen handlebars templates (e.g., `eq`)
+- Add a new helpers file with generic reusable homegrown template helpers, with one so far: a helper to rearrange US-order street addresses into EU order (move numbers to end)
+
 ## 33.2.0
 
 - Add a mechanism for correcting whitespace errors in addresses in limited circumstances.
