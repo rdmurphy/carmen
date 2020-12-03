@@ -18,6 +18,7 @@ const geocode = require('./lib/geocoder/geocode');
 const analyze = require('./lib/util/analyze');
 const token = require('./lib/text-processing/token');
 const index = require('./lib/indexer/index');
+const helpers = require('./lib/util/helpers');
 
 require('util').inherits(Geocoder, EventEmitter);
 module.exports = Geocoder;
@@ -65,16 +66,19 @@ function Geocoder(indexes, options) {
     this.indexes = indexes;
 
     const globalTokens = options.tokens || {};
-    const formatHelpers = options.formatHelpers || {};
+    let formatHelpers = options.formatHelpers || {};
     if (typeof globalTokens !== 'object') throw new Error('globalTokens must be an object');
     if (typeof formatHelpers !== 'object') throw new Error('helper functions must be an object');
+
+    // include standard comparison helpers
+    formatHelpers = { ...helpers, ...formatHelpers };
 
     this.replacer = token.createGlobalReplacer(globalTokens);
 
     this.worldviews = options.worldviews || ['default'];
 
     this.globaltokens = options.tokens;
-    this.formatHelpers = options.formatHelpers;
+    this.formatHelpers = formatHelpers;
     this.byname = {};
     this.bytype = {};
     this.bysubtype = {};
@@ -222,7 +226,7 @@ function Geocoder(indexes, options) {
             source.simple_replacer = token.createSimpleReplacer(source.categorized_replacement_words.simple);
             source.complex_query_replacer = token.createComplexReplacer(source.categorized_replacement_words.complex, { includeRelevanceReduction: false });
             source.complex_indexing_replacer = token.createComplexReplacer(source.categorized_replacement_words.complex, { includeUnambiguous: true , includeRelevanceReduction: true });
-            source.format_helpers = options.formatHelpers;
+            source.format_helpers = formatHelpers;
 
             source.categories = false;
             if (info.geocoder_categories) {

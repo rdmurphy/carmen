@@ -14,7 +14,7 @@ const addFeature = require('../../../lib/indexer/addfeature'),
         address: new mem({
             maxzoom: 6,
             geocoder_address:1,
-            geocoder_format: '{{hyphenated address.number}} {{toUpper address.name}}, {{place.name}}, {{region.name}} {{postcode.name}}',
+            geocoder_format: '{{#eq address.number "3000"}}3000!{{else}}{{hyphenated address.number}}{{/eq}} {{toUpper address.name}}, {{place.name}}, {{region.name}} {{postcode.name}}',
             geocoder_tokens: { 'Lane': 'La' }
         }, () => {})
     };
@@ -41,17 +41,25 @@ const addFeature = require('../../../lib/indexer/addfeature'),
             properties: {
                 'carmen:text': 'Quincy Lane',
                 'carmen:center': [0,0],
-                'carmen:addressnumber': ['2169']
+                'carmen:addressnumber': ['2169', '3000']
             },
             geometry: {
                 type: 'MultiPoint',
-                coordinates: [[0,0]]
+                coordinates: [[0,0], [1,1]]
             }
         };
         queueFeature(conf.address, address, () => { buildQueued(conf.address, t.end); });
     });
 
-    tape('test template helper functions', (t) => {
+    tape('test built-in template helper functions', (t) => {
+        c.geocode('3000 Quincy Lane', {}, (err, res) => {
+            t.ifError(err);
+            t.equals(res.features[0].place_name, '3000! QUINCY LANE', 'uses built-in equality test');
+            t.end();
+        });
+    });
+
+    tape('test user-defined template helper functions', (t) => {
         c.geocode('2169 Quincy Lane', {}, (err, res) => {
             t.ifError(err);
             t.equals(res.features[0].place_name, '21-69 QUINCY LANE', 'uses helper functions to convert {address.name} toUpperCase and hyphenate {address.number}');
